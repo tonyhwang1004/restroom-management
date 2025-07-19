@@ -33,6 +33,7 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
@@ -44,6 +45,24 @@
         .header p {
             font-size: 16px;
             opacity: 0.9;
+        }
+
+        .admin-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .main-content {
@@ -147,6 +166,16 @@
         .btn-danger:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+            color: white;
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(156, 39, 176, 0.3);
         }
 
         .active-list {
@@ -333,12 +362,79 @@
             font-size: 14px;
         }
 
+        /* 관리자 모드 스타일 */
+        .admin-panel {
+            background: #fff8e1;
+            border: 2px solid #ffcc02;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-title {
+            color: #f57c00;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background: white;
+        }
+
+        .seat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .seat-number {
+            font-weight: 600;
+            color: #333;
+            min-width: 40px;
+        }
+
+        .seat-name-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .admin-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         @media (max-width: 768px) {
             .input-group {
                 flex-direction: column;
             }
 
-            .button-group {
+            .button-group, .admin-actions {
                 flex-direction: column;
             }
 
@@ -355,6 +451,17 @@
             .stats {
                 grid-template-columns: 1fr;
             }
+
+            .admin-toggle {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-top: 10px;
+            }
+
+            .seat-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -363,9 +470,34 @@
         <div class="header">
             <h1>🚻 독서실 화장실 외출 관리</h1>
             <p>효율적인 화장실 이용 시간 관리 시스템 (제한시간: 10분)</p>
+            <button class="admin-toggle" onclick="toggleAdminMode()">
+                🔧 관리자 모드
+            </button>
         </div>
 
         <div class="main-content">
+            <!-- 관리자 패널 -->
+            <div class="admin-panel" id="adminPanel">
+                <div class="admin-title">
+                    🔧 좌석 정보 관리
+                </div>
+                <p style="margin-bottom: 20px; color: #666;">좌석 번호별 이름을 수정할 수 있습니다. 변경 후 저장 버튼을 클릭하세요.</p>
+                <div class="seat-grid" id="seatGrid">
+                    <!-- 좌석 정보가 여기에 동적으로 생성됩니다 -->
+                </div>
+                <div class="admin-actions">
+                    <button class="btn btn-admin" onclick="saveSeatData()">
+                        💾 변경사항 저장
+                    </button>
+                    <button class="btn btn-demo" onclick="resetToDefault()">
+                        🔄 기본값으로 복원
+                    </button>
+                    <button class="btn btn-danger" onclick="clearAllSeats()">
+                        🗑️ 모든 좌석 비우기
+                    </button>
+                </div>
+            </div>
+
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-number" id="totalOut">0</div>
@@ -429,8 +561,8 @@
     </div>
 
     <script>
-        // 독서실 좌석 정보
-        const seatData = {
+        // 기본 독서실 좌석 정보
+        const defaultSeatData = {
             41: "조민지", 34: "정예빈", 27: "김현나", 20: "이서연2", 14: "김유진2", 8: "진세희", 1: "신지윤",
             42: "한예린", 35: "김아름", 28: "문지현", 21: "김민성3", 15: "김도윤2", 9: "김서영", 2: "김준성",
             43: "박주연", 36: "이재원", 29: "한재원", 22: "김서윤3", 16: "구원모", 10: "팀명서2", 3: "이유진2",
@@ -440,9 +572,100 @@
             47: "", 40: "김수민3", 33: "박시현2", 26: "김건우", 7: "최민서"
         };
 
+        // 현재 좌석 데이터 (로컬 스토리지에서 불러오거나 기본값 사용)
+        let seatData = JSON.parse(JSON.stringify(defaultSeatData));
+
         let activeUsers = [];
         let timers = {};
         let todayCount = 0;
+        let isAdminMode = false;
+
+        // 로컬 스토리지에서 좌석 데이터 불러오기
+        function loadSeatData() {
+            const stored = localStorage.getItem('restroomSeatData');
+            if (stored) {
+                try {
+                    seatData = JSON.parse(stored);
+                } catch (e) {
+                    console.log('저장된 좌석 데이터 로드 실패, 기본값 사용');
+                    seatData = JSON.parse(JSON.stringify(defaultSeatData));
+                }
+            }
+        }
+
+        // 좌석 데이터를 로컬 스토리지에 저장
+        function saveSeatDataToStorage() {
+            localStorage.setItem('restroomSeatData', JSON.stringify(seatData));
+        }
+
+        // 관리자 모드 토글
+        function toggleAdminMode() {
+            isAdminMode = !isAdminMode;
+            const panel = document.getElementById('adminPanel');
+            const toggle = document.querySelector('.admin-toggle');
+            
+            if (isAdminMode) {
+                panel.classList.add('active');
+                toggle.textContent = '❌ 관리자 모드 닫기';
+                renderSeatGrid();
+            } else {
+                panel.classList.remove('active');
+                toggle.textContent = '🔧 관리자 모드';
+            }
+        }
+
+        // 좌석 그리드 렌더링
+        function renderSeatGrid() {
+            const grid = document.getElementById('seatGrid');
+            const seatNumbers = Object.keys(seatData).sort((a, b) => parseInt(a) - parseInt(b));
+            
+            grid.innerHTML = seatNumbers.map(number => `
+                <div class="seat-item">
+                    <div class="seat-number">${number}번</div>
+                    <input 
+                        type="text" 
+                        class="seat-name-input" 
+                        value="${seatData[number] || ''}" 
+                        placeholder="이름 입력"
+                        data-seat="${number}"
+                    >
+                </div>
+            `).join('');
+        }
+
+        // 좌석 데이터 저장
+        function saveSeatData() {
+            const inputs = document.querySelectorAll('.seat-name-input');
+            inputs.forEach(input => {
+                const seatNumber = input.dataset.seat;
+                seatData[seatNumber] = input.value.trim();
+            });
+            
+            saveSeatDataToStorage();
+            showNotification('좌석 정보가 저장되었습니다!');
+        }
+
+        // 기본값으로 복원
+        function resetToDefault() {
+            if (confirm('모든 좌석 정보를 기본값으로 복원하시겠습니까?')) {
+                seatData = JSON.parse(JSON.stringify(defaultSeatData));
+                saveSeatDataToStorage();
+                renderSeatGrid();
+                showNotification('기본값으로 복원되었습니다.');
+            }
+        }
+
+        // 모든 좌석 비우기
+        function clearAllSeats() {
+            if (confirm('모든 좌석의 이름을 비우시겠습니까?')) {
+                Object.keys(seatData).forEach(key => {
+                    seatData[key] = '';
+                });
+                saveSeatDataToStorage();
+                renderSeatGrid();
+                showNotification('모든 좌석이 비워졌습니다.');
+            }
+        }
 
         function updateStats() {
             document.getElementById('totalOut').textContent = activeUsers.length;
@@ -630,17 +853,18 @@
 
             // 데모용 사용자들 추가 (모두 10분 제한)
             const demoUsers = [
-                { number: "27", name: "김현나", timeLimit: 10 * 60, elapsed: 6 * 60 }, // 6분 경과
-                { number: "42", name: "한예린", timeLimit: 10 * 60, elapsed: 12 * 60 }, // 2분 초과
-                { number: "15", name: "김도윤2", timeLimit: 10 * 60, elapsed: 3 * 60 }, // 3분 경과
+                { number: "27", timeLimit: 10 * 60, elapsed: 6 * 60 }, // 6분 경과
+                { number: "42", timeLimit: 10 * 60, elapsed: 12 * 60 }, // 2분 초과
+                { number: "15", timeLimit: 10 * 60, elapsed: 3 * 60 }, // 3분 경과
             ];
 
             demoUsers.forEach(demo => {
                 // 중복 체크
                 if (!activeUsers.find(user => user.number === demo.number)) {
+                    const name = seatData[demo.number] || `학생${demo.number}`;
                     const user = {
                         number: demo.number,
-                        name: demo.name,
+                        name: name,
                         startTime: Date.now() - (demo.elapsed * 1000),
                         timeLimit: demo.timeLimit,
                         isOvertime: demo.elapsed > demo.timeLimit
@@ -683,13 +907,14 @@
 
         // 엔터키로 외출 시작
         document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !isAdminMode) {
                 startRestroom();
             }
         });
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
+            loadSeatData(); // 저장된 좌석 데이터 불러오기
             updateStats();
             updateActiveList();
             document.getElementById('studentNumber').focus();
@@ -698,13 +923,6 @@
             setTimeout(() => {
                 showNotification('독서실 화장실 외출 관리 시스템이 준비되었습니다!', 'info');
             }, 1000);
-            
-            // 3초 후 데모 데이터 자동 추가 (개발용)
-            setTimeout(() => {
-                if (confirm('데모 데이터를 자동으로 로드하시겠습니까?')) {
-                    addDemoData();
-                }
-            }, 3000);
         });
 
         // 5분마다 상태 점검
