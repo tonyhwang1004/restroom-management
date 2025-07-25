@@ -1,12 +1,4 @@
-.btn-admin {
-            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
-            color: white;
-        }
-
-        .btn-admin:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(156, 39, 176, 0.3);
-        }<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -41,6 +33,7 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
@@ -52,6 +45,24 @@
         .header p {
             font-size: 16px;
             opacity: 0.9;
+        }
+
+        .admin-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .main-content {
@@ -155,6 +166,16 @@
         .btn-danger:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+            color: white;
+        }
+
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(156, 39, 176, 0.3);
         }
 
         .active-list {
@@ -341,12 +362,79 @@
             font-size: 14px;
         }
 
+        /* 관리자 모드 스타일 */
+        .admin-panel {
+            background: #fff8e1;
+            border: 2px solid #ffcc02;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-title {
+            color: #f57c00;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .seat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            background: white;
+        }
+
+        .seat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .seat-number {
+            font-weight: 600;
+            color: #333;
+            min-width: 40px;
+        }
+
+        .seat-name-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .admin-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
         @media (max-width: 768px) {
             .input-group {
                 flex-direction: column;
             }
 
-            .button-group {
+            .button-group, .admin-actions {
                 flex-direction: column;
             }
 
@@ -361,182 +449,19 @@
             }
 
             .stats {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                width: 95%;
-                margin: 10px;
+            .admin-toggle {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-top: 10px;
             }
-        }
 
-        /* 모달 스타일 */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .modal-body {
-            padding: 20px;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-        .modal-footer {
-            padding: 20px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .records-summary {
-            background: #f8f9ff;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .summary-item {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .summary-label {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .summary-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #4facfe;
-        }
-
-        .records-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .record-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            background: white;
-            transition: all 0.3s ease;
-        }
-
-        .record-item:hover {
-            background: #f8f9ff;
-            border-color: #4facfe;
-        }
-
-        .record-info {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-
-        .record-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .record-number {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .record-times {
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-            text-align: right;
-        }
-
-        .record-duration {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .record-time {
-            font-size: 12px;
-            color: #888;
-        }
-
-        .duration-normal {
-            color: #4caf50;
-        }
-
-        .duration-warning {
-            color: #ff6b00;
-        }
-
-        .duration-danger {
-            color: #f44336;
-            font-weight: 600;
+            .seat-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -545,9 +470,34 @@
         <div class="header">
             <h1>🚻 독서실 화장실 외출 관리</h1>
             <p>효율적인 화장실 이용 시간 관리 시스템 (제한시간: 10분)</p>
+            <button class="admin-toggle" onclick="toggleAdminMode()">
+                🔧 관리자 모드
+            </button>
         </div>
 
         <div class="main-content">
+            <!-- 관리자 패널 -->
+            <div class="admin-panel" id="adminPanel">
+                <div class="admin-title">
+                    🔧 좌석 정보 관리
+                </div>
+                <p style="margin-bottom: 20px; color: #666;">좌석 번호별 이름을 수정할 수 있습니다. 변경 후 저장 버튼을 클릭하세요.</p>
+                <div class="seat-grid" id="seatGrid">
+                    <!-- 좌석 정보가 여기에 동적으로 생성됩니다 -->
+                </div>
+                <div class="admin-actions">
+                    <button class="btn btn-admin" onclick="saveSeatData()">
+                        💾 변경사항 저장
+                    </button>
+                    <button class="btn btn-demo" onclick="resetToDefault()">
+                        🔄 기본값으로 복원
+                    </button>
+                    <button class="btn btn-danger" onclick="clearAllSeats()">
+                        🗑️ 모든 좌석 비우기
+                    </button>
+                </div>
+            </div>
+
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-number" id="totalOut">0</div>
@@ -560,10 +510,6 @@
                 <div class="stat-card">
                     <div class="stat-number" id="todayTotal">0</div>
                     <div class="stat-label">오늘 총 외출</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="dailyRecords">0</div>
-                    <div class="stat-label">오늘 출입 기록</div>
                 </div>
             </div>
 
@@ -589,9 +535,6 @@
                     <button class="btn btn-demo" onclick="addDemoData()">
                         🎬 데모 보기
                     </button>
-                    <button class="btn btn-admin" onclick="showDailyRecords()">
-                        📊 출입 기록
-                    </button>
                     <button class="btn btn-danger" onclick="clearAll()">
                         🔄 전체 초기화
                     </button>
@@ -608,36 +551,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 출입 기록 모달 -->
-            <div class="modal" id="recordsModal" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2>📊 오늘의 출입 기록</h2>
-                        <button class="modal-close" onclick="closeRecordsModal()">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="records-summary">
-                            <div class="summary-item">
-                                <span class="summary-label">총 출입 횟수:</span>
-                                <span class="summary-value" id="totalRecordsCount">0</span>
-                            </div>
-                            <div class="summary-item">
-                                <span class="summary-label">오늘 날짜:</span>
-                                <span class="summary-value" id="currentDateDisplay"></span>
-                            </div>
-                        </div>
-                        <div class="records-list" id="recordsList">
-                            <!-- 기록이 여기에 표시됩니다 -->
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-demo" onclick="exportRecords()">📥 기록 내보내기</button>
-                        <button class="btn btn-danger" onclick="clearDailyRecords()">🗑️ 기록 삭제</button>
-                        <button class="btn btn-primary" onclick="closeRecordsModal()">닫기</button>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="footer">
@@ -648,8 +561,8 @@
     </div>
 
     <script>
-        // 독서실 좌석 정보
-        const seatData = {
+        // 기본 독서실 좌석 정보
+        const defaultSeatData = {
             41: "조민지", 34: "정예빈", 27: "김현나", 20: "이서연2", 14: "김유진2", 8: "진세희", 1: "신지윤",
             42: "한예린", 35: "김아름", 28: "문지현", 21: "김민성3", 15: "김도윤2", 9: "김서영", 2: "김준성",
             43: "박주연", 36: "이재원", 29: "한재원", 22: "김서윤3", 16: "구원모", 10: "팀명서2", 3: "이유진2",
@@ -659,17 +572,105 @@
             47: "", 40: "김수민3", 33: "박시현2", 26: "김건우", 7: "최민서"
         };
 
+        // 현재 좌석 데이터 (로컬 스토리지에서 불러오거나 기본값 사용)
+        let seatData = JSON.parse(JSON.stringify(defaultSeatData));
+
         let activeUsers = [];
         let timers = {};
         let todayCount = 0;
-        let dailyRecords = []; // 하루 출입 기록
-        let currentDate = new Date().toDateString();
+        let isAdminMode = false;
+
+        // 로컬 스토리지에서 좌석 데이터 불러오기
+        function loadSeatData() {
+            const stored = localStorage.getItem('restroomSeatData');
+            if (stored) {
+                try {
+                    seatData = JSON.parse(stored);
+                } catch (e) {
+                    console.log('저장된 좌석 데이터 로드 실패, 기본값 사용');
+                    seatData = JSON.parse(JSON.stringify(defaultSeatData));
+                }
+            }
+        }
+
+        // 좌석 데이터를 로컬 스토리지에 저장
+        function saveSeatDataToStorage() {
+            localStorage.setItem('restroomSeatData', JSON.stringify(seatData));
+        }
+
+        // 관리자 모드 토글
+        function toggleAdminMode() {
+            isAdminMode = !isAdminMode;
+            const panel = document.getElementById('adminPanel');
+            const toggle = document.querySelector('.admin-toggle');
+            
+            if (isAdminMode) {
+                panel.classList.add('active');
+                toggle.textContent = '❌ 관리자 모드 닫기';
+                renderSeatGrid();
+            } else {
+                panel.classList.remove('active');
+                toggle.textContent = '🔧 관리자 모드';
+            }
+        }
+
+        // 좌석 그리드 렌더링
+        function renderSeatGrid() {
+            const grid = document.getElementById('seatGrid');
+            const seatNumbers = Object.keys(seatData).sort((a, b) => parseInt(a) - parseInt(b));
+            
+            grid.innerHTML = seatNumbers.map(number => `
+                <div class="seat-item">
+                    <div class="seat-number">${number}번</div>
+                    <input 
+                        type="text" 
+                        class="seat-name-input" 
+                        value="${seatData[number] || ''}" 
+                        placeholder="이름 입력"
+                        data-seat="${number}"
+                    >
+                </div>
+            `).join('');
+        }
+
+        // 좌석 데이터 저장
+        function saveSeatData() {
+            const inputs = document.querySelectorAll('.seat-name-input');
+            inputs.forEach(input => {
+                const seatNumber = input.dataset.seat;
+                seatData[seatNumber] = input.value.trim();
+            });
+            
+            saveSeatDataToStorage();
+            showNotification('좌석 정보가 저장되었습니다!');
+        }
+
+        // 기본값으로 복원
+        function resetToDefault() {
+            if (confirm('모든 좌석 정보를 기본값으로 복원하시겠습니까?')) {
+                seatData = JSON.parse(JSON.stringify(defaultSeatData));
+                saveSeatDataToStorage();
+                renderSeatGrid();
+                showNotification('기본값으로 복원되었습니다.');
+            }
+        }
+
+        // 모든 좌석 비우기
+        function clearAllSeats() {
+            if (confirm('모든 좌석의 이름을 비우시겠습니까?')) {
+                Object.keys(seatData).forEach(key => {
+                    seatData[key] = '';
+                });
+                saveSeatDataToStorage();
+                renderSeatGrid();
+                showNotification('모든 좌석이 비워졌습니다.');
+            }
+        }
 
         function updateStats() {
             document.getElementById('totalOut').textContent = activeUsers.length;
             document.getElementById('totalWarning').textContent = activeUsers.filter(user => user.isOvertime).length;
             document.getElementById('todayTotal').textContent = todayCount;
-            document.getElementById('dailyRecords').textContent = dailyRecords.length;
         }
 
         function showNotification(message, type = 'success') {
@@ -782,12 +783,6 @@
             const userIndex = activeUsers.findIndex(user => user.number === number);
             if (userIndex !== -1) {
                 const user = activeUsers[userIndex];
-                const endTime = Date.now();
-                const duration = Math.floor((endTime - user.startTime) / 1000);
-                
-                // 출입 기록에 추가
-                addToRecords(user, duration, endTime);
-                
                 clearInterval(timers[number]);
                 delete timers[number];
                 activeUsers.splice(userIndex, 1);
@@ -858,17 +853,18 @@
 
             // 데모용 사용자들 추가 (모두 10분 제한)
             const demoUsers = [
-                { number: "27", name: "김현나", timeLimit: 10 * 60, elapsed: 6 * 60 }, // 6분 경과
-                { number: "42", name: "한예린", timeLimit: 10 * 60, elapsed: 12 * 60 }, // 2분 초과
-                { number: "15", name: "김도윤2", timeLimit: 10 * 60, elapsed: 3 * 60 }, // 3분 경과
+                { number: "27", timeLimit: 10 * 60, elapsed: 6 * 60 }, // 6분 경과
+                { number: "42", timeLimit: 10 * 60, elapsed: 12 * 60 }, // 2분 초과
+                { number: "15", timeLimit: 10 * 60, elapsed: 3 * 60 }, // 3분 경과
             ];
 
             demoUsers.forEach(demo => {
                 // 중복 체크
                 if (!activeUsers.find(user => user.number === demo.number)) {
+                    const name = seatData[demo.number] || `학생${demo.number}`;
                     const user = {
                         number: demo.number,
-                        name: demo.name,
+                        name: name,
                         startTime: Date.now() - (demo.elapsed * 1000),
                         timeLimit: demo.timeLimit,
                         isOvertime: demo.elapsed > demo.timeLimit
@@ -911,15 +907,14 @@
 
         // 엔터키로 외출 시작
         document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !isAdminMode) {
                 startRestroom();
             }
         });
 
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            loadDailyRecords(); // 오늘의 출입 기록 불러오기
-            checkDayReset(); // 날짜 변경 체크
+            loadSeatData(); // 저장된 좌석 데이터 불러오기
             updateStats();
             updateActiveList();
             document.getElementById('studentNumber').focus();
@@ -928,207 +923,15 @@
             setTimeout(() => {
                 showNotification('독서실 화장실 외출 관리 시스템이 준비되었습니다!', 'info');
             }, 1000);
-            
-            // 3초 후 데모 데이터 자동 추가 (개발용)
-            setTimeout(() => {
-                if (confirm('데모 데이터를 자동으로 로드하시겠습니까?')) {
-                    addDemoData();
-                }
-            }, 3000);
         });
 
-        // 출입 기록 관련 함수들
-        function addToRecords(user, duration, endTime) {
-            checkDayReset(); // 날짜 변경 체크
-            
-            const record = {
-                number: user.number,
-                name: user.name,
-                startTime: user.startTime,
-                endTime: endTime,
-                duration: duration,
-                isOvertime: duration > 600, // 10분 초과 여부
-                date: new Date().toDateString()
-            };
-            
-            dailyRecords.push(record);
-            saveDailyRecords();
-        }
-
-        function loadDailyRecords() {
-            const today = new Date().toDateString();
-            const stored = localStorage.getItem(`dailyRecords_${today}`);
-            
-            if (stored) {
-                try {
-                    const data = JSON.parse(stored);
-                    // 오전 8시 이후 기록만 로드
-                    const now = new Date();
-                    const startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 8, 0, 0);
-                    
-                    dailyRecords = data.filter(record => new Date(record.endTime) >= startTime);
-                    todayCount = dailyRecords.length;
-                } catch (e) {
-                    console.log('출입 기록 로드 실패');
-                    dailyRecords = [];
-                }
-            }
-        }
-
-        function saveDailyRecords() {
-            const today = new Date().toDateString();
-            localStorage.setItem(`dailyRecords_${today}`, JSON.stringify(dailyRecords));
-        }
-
-        function checkDayReset() {
-            const today = new Date().toDateString();
-            const now = new Date();
-            
-            // 자정이 지났거나 날짜가 바뀌었을 때
-            if (currentDate !== today) {
-                // 자정(00:00)에 전날 기록 정리
-                if (now.getHours() === 0 && now.getMinutes() < 5) {
-                    clearOldRecords();
-                }
-                
-                currentDate = today;
-                dailyRecords = [];
-                todayCount = 0;
-                
-                // 오전 8시 이후라면 오늘 기록 로드
-                if (now.getHours() >= 8) {
-                    loadDailyRecords();
-                }
-                
-                updateStats();
-            }
-        }
-
-        function clearOldRecords() {
-            // 3일 이전 기록 삭제
-            const threeDaysAgo = new Date();
-            threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-            
-            const keys = Object.keys(localStorage);
-            keys.forEach(key => {
-                if (key.startsWith('dailyRecords_')) {
-                    const dateStr = key.replace('dailyRecords_', '');
-                    const recordDate = new Date(dateStr);
-                    
-                    if (recordDate < threeDaysAgo) {
-                        localStorage.removeItem(key);
-                    }
-                }
-            });
-        }
-
-        function showDailyRecords() {
-            const modal = document.getElementById('recordsModal');
-            const recordsList = document.getElementById('recordsList');
-            const totalCount = document.getElementById('totalRecordsCount');
-            const dateDisplay = document.getElementById('currentDateDisplay');
-            
-            modal.style.display = 'flex';
-            totalCount.textContent = dailyRecords.length;
-            dateDisplay.textContent = new Date().toLocaleDateString('ko-KR');
-            
-            if (dailyRecords.length === 0) {
-                recordsList.innerHTML = '<div class="empty-state">오늘 출입 기록이 없습니다.</div>';
-                return;
-            }
-            
-            // 최신 기록부터 표시
-            const sortedRecords = [...dailyRecords].sort((a, b) => b.endTime - a.endTime);
-            
-            recordsList.innerHTML = sortedRecords.map(record => {
-                const durationClass = record.duration > 600 ? 'duration-danger' : 
-                                    record.duration > 300 ? 'duration-warning' : 'duration-normal';
-                
-                const startTimeStr = new Date(record.startTime).toLocaleTimeString('ko-KR', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                const endTimeStr = new Date(record.endTime).toLocaleTimeString('ko-KR', {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                
-                const durationMin = Math.floor(record.duration / 60);
-                const durationSec = record.duration % 60;
-                const durationStr = `${durationMin}분 ${durationSec}초`;
-                
-                return `
-                    <div class="record-item">
-                        <div class="record-info">
-                            <div class="record-name">${record.name}</div>
-                            <div class="record-number">좌석: ${record.number}번</div>
-                        </div>
-                        <div class="record-times">
-                            <div class="record-duration ${durationClass}">${durationStr}</div>
-                            <div class="record-time">${startTimeStr} → ${endTimeStr}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function closeRecordsModal() {
-            document.getElementById('recordsModal').style.display = 'none';
-        }
-
-        function exportRecords() {
-            if (dailyRecords.length === 0) {
-                showNotification('내보낼 기록이 없습니다.', 'warning');
-                return;
-            }
-            
-            const today = new Date().toLocaleDateString('ko-KR');
-            let csvContent = `독서실 화장실 출입 기록 - ${today}\n\n`;
-            csvContent += '이름,좌석번호,외출시간,복귀시간,이용시간,초과여부\n';
-            
-            dailyRecords.forEach(record => {
-                const startTime = new Date(record.startTime).toLocaleTimeString('ko-KR');
-                const endTime = new Date(record.endTime).toLocaleTimeString('ko-KR');
-                const duration = `${Math.floor(record.duration / 60)}분 ${record.duration % 60}초`;
-                const overtime = record.isOvertime ? '초과' : '정상';
-                
-                csvContent += `${record.name},${record.number},${startTime},${endTime},${duration},${overtime}\n`;
-            });
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `화장실_출입기록_${today.replace(/\./g, '')}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showNotification('출입 기록이 다운로드되었습니다.');
-        }
-
-        function clearDailyRecords() {
-            if (confirm('오늘의 모든 출입 기록을 삭제하시겠습니까?')) {
-                dailyRecords = [];
-                todayCount = 0;
-                saveDailyRecords();
-                updateStats();
-                closeRecordsModal();
-                showNotification('출입 기록이 삭제되었습니다.');
-            }
-        }
-
-        // 1분마다 날짜 변경 체크 및 상태 점검
+        // 5분마다 상태 점검
         setInterval(() => {
-            checkDayReset();
-            
             const overtimeUsers = activeUsers.filter(user => user.isOvertime);
             if (overtimeUsers.length > 0) {
                 console.log(`현재 ${overtimeUsers.length}명이 시간 초과 상태입니다.`);
             }
-        }, 60000); // 1분마다
+        }, 300000); // 5분마다
 
         // 페이지 언로드 시 확인
         window.addEventListener('beforeunload', function(e) {
