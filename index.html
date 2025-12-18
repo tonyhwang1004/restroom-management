@@ -544,6 +544,147 @@
             display: inline-block;
         }
 
+        /* 외출 기록 스타일 */
+        .history-panel {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid #e1e8ff;
+            overflow: hidden;
+        }
+
+        .history-header {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+            padding: 20px;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .history-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .history-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .history-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .history-table th {
+            background: #f8f9ff;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e1e8ff;
+            position: sticky;
+            top: 0;
+        }
+
+        .history-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .history-table tr:hover {
+            background: #f8f9ff;
+        }
+
+        .overtime-badge {
+            background: #ffebee;
+            color: #f44336;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .normal-badge {
+            background: #e8f5e9;
+            color: #4caf50;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .history-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-bottom: 2px solid #e1e8ff;
+        }
+
+        .history-stat-item {
+            text-align: center;
+        }
+
+        .history-stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff9800;
+        }
+
+        .history-stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .no-history {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .filter-section {
+            padding: 15px 20px;
+            background: #fff;
+            border-bottom: 1px solid #e1e8ff;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-section select, .filter-section input {
+            padding: 8px 12px;
+            border: 2px solid #dde4ff;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
         @media (max-width: 768px) {
             .input-group {
                 flex-direction: column;
@@ -696,6 +837,68 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 외출 기록 패널 -->
+            <div class="history-panel">
+                <div class="history-header">
+                    <span>📊 외출 기록</span>
+                    <div class="history-actions">
+                        <button class="history-btn" onclick="exportHistory()">📥 내보내기</button>
+                        <button class="history-btn" onclick="clearHistory()">🗑️ 기록 삭제</button>
+                    </div>
+                </div>
+                
+                <!-- 통계 -->
+                <div class="history-stats">
+                    <div class="history-stat-item">
+                        <div class="history-stat-number" id="historyTotal">0</div>
+                        <div class="history-stat-label">총 외출</div>
+                    </div>
+                    <div class="history-stat-item">
+                        <div class="history-stat-number" id="historyOvertime">0</div>
+                        <div class="history-stat-label">시간 초과</div>
+                    </div>
+                    <div class="history-stat-item">
+                        <div class="history-stat-number" id="historyAvgTime">0분</div>
+                        <div class="history-stat-label">평균 시간</div>
+                    </div>
+                    <div class="history-stat-item">
+                        <div class="history-stat-number" id="historyTopUser">-</div>
+                        <div class="history-stat-label">최다 외출</div>
+                    </div>
+                </div>
+
+                <!-- 필터 -->
+                <div class="filter-section">
+                    <select id="historyDateFilter" onchange="renderHistory()">
+                        <option value="today">오늘</option>
+                        <option value="week">최근 7일</option>
+                        <option value="month">최근 30일</option>
+                        <option value="all">전체</option>
+                    </select>
+                    <input type="text" id="historySearch" placeholder="이름 검색..." oninput="renderHistory()">
+                </div>
+
+                <!-- 기록 테이블 -->
+                <div class="history-content">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>날짜/시간</th>
+                                <th>좌석</th>
+                                <th>이름</th>
+                                <th>소요 시간</th>
+                                <th>상태</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <tr>
+                                <td colspan="5" class="no-history">기록이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div class="footer">
@@ -711,6 +914,9 @@
         // ============================================
         const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQDqLzIW7jv4R3g-dlsVOIkQUILTFMndpM54H7_rALP4bdBw_5oEtY48cKn1mx4wAJdi7FHtvtMk-1o/pub?output=csv';
         
+        // 외출 기록 저장용 Apps Script URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMT3K912uPN0gCzTKas9Whv1m3eoTU7QoSAV1LMzlVvVfCXrDYNEWOrE1u_RL7OjrR/exec';
+        
         // 현재 좌석 데이터
         let seatData = {};
         let activeUsers = [];
@@ -718,6 +924,225 @@
         let todayCount = 0;
         let isAdminMode = false;
         let lastSyncTime = null;
+        
+        // 외출 기록 데이터
+        let historyData = [];
+
+        // ============================================
+        // 외출 기록 관리
+        // ============================================
+        
+        // 기록 불러오기
+        function loadHistory() {
+            const stored = localStorage.getItem('restroomHistory');
+            if (stored) {
+                try {
+                    historyData = JSON.parse(stored);
+                } catch (e) {
+                    historyData = [];
+                }
+            }
+            renderHistory();
+        }
+
+        // 기록 저장
+        function saveHistory() {
+            localStorage.setItem('restroomHistory', JSON.stringify(historyData));
+        }
+
+        // 기록 추가
+        function addHistory(user, duration, isOvertime) {
+            const now = new Date();
+            const record = {
+                id: Date.now(),
+                date: now.toISOString(),
+                seat: user.number,
+                name: user.name,
+                duration: duration, // 초 단위
+                isOvertime: isOvertime
+            };
+            historyData.unshift(record); // 최신순으로 추가
+            
+            // 최대 500개 기록만 유지
+            if (historyData.length > 500) {
+                historyData = historyData.slice(0, 500);
+            }
+            
+            saveHistory();
+            renderHistory();
+            
+            // 구글 시트에도 저장
+            saveToGoogleSheet(record);
+        }
+
+        // 구글 시트에 저장
+        async function saveToGoogleSheet(record) {
+            const date = new Date(record.date);
+            const dateStr = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')}`;
+            const timeStr = `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}:${date.getSeconds().toString().padStart(2,'0')}`;
+            const durationMin = Math.floor(record.duration / 60);
+            const durationSec = record.duration % 60;
+            
+            const data = {
+                date: dateStr,
+                time: timeStr,
+                seat: record.seat,
+                name: record.name,
+                duration: `${durationMin}분 ${durationSec}초`,
+                overtime: record.isOvertime ? '초과' : '정상'
+            };
+            
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                console.log('구글 시트에 저장 완료');
+            } catch (error) {
+                console.error('구글 시트 저장 실패:', error);
+            }
+        }
+
+        // 기록 렌더링
+        function renderHistory() {
+            const tbody = document.getElementById('historyBody');
+            const dateFilter = document.getElementById('historyDateFilter').value;
+            const searchText = document.getElementById('historySearch').value.toLowerCase();
+            
+            // 필터링
+            const now = new Date();
+            let filtered = historyData.filter(record => {
+                const recordDate = new Date(record.date);
+                
+                // 날짜 필터
+                if (dateFilter === 'today') {
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    if (recordDate < today) return false;
+                } else if (dateFilter === 'week') {
+                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    if (recordDate < weekAgo) return false;
+                } else if (dateFilter === 'month') {
+                    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    if (recordDate < monthAgo) return false;
+                }
+                
+                // 검색 필터
+                if (searchText && !record.name.toLowerCase().includes(searchText)) {
+                    return false;
+                }
+                
+                return true;
+            });
+
+            // 통계 업데이트
+            updateHistoryStats(filtered);
+
+            // 테이블 렌더링
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="no-history">기록이 없습니다.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.slice(0, 100).map(record => {
+                const date = new Date(record.date);
+                const dateStr = `${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getDate().toString().padStart(2,'0')} ${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}`;
+                const durationMin = Math.floor(record.duration / 60);
+                const durationSec = record.duration % 60;
+                const durationStr = `${durationMin}분 ${durationSec}초`;
+                
+                return `
+                    <tr>
+                        <td>${dateStr}</td>
+                        <td>${record.seat}번</td>
+                        <td>${record.name}</td>
+                        <td>${durationStr}</td>
+                        <td>${record.isOvertime ? '<span class="overtime-badge">초과</span>' : '<span class="normal-badge">정상</span>'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // 통계 업데이트
+        function updateHistoryStats(records) {
+            // 총 외출
+            document.getElementById('historyTotal').textContent = records.length;
+            
+            // 시간 초과
+            const overtime = records.filter(r => r.isOvertime).length;
+            document.getElementById('historyOvertime').textContent = overtime;
+            
+            // 평균 시간
+            if (records.length > 0) {
+                const avgSec = records.reduce((sum, r) => sum + r.duration, 0) / records.length;
+                const avgMin = Math.round(avgSec / 60);
+                document.getElementById('historyAvgTime').textContent = avgMin + '분';
+            } else {
+                document.getElementById('historyAvgTime').textContent = '0분';
+            }
+            
+            // 최다 외출자
+            if (records.length > 0) {
+                const countByName = {};
+                records.forEach(r => {
+                    countByName[r.name] = (countByName[r.name] || 0) + 1;
+                });
+                const topUser = Object.entries(countByName).sort((a, b) => b[1] - a[1])[0];
+                document.getElementById('historyTopUser').textContent = topUser ? `${topUser[0]}(${topUser[1]}회)` : '-';
+            } else {
+                document.getElementById('historyTopUser').textContent = '-';
+            }
+        }
+
+        // 기록 내보내기 (CSV)
+        function exportHistory() {
+            if (historyData.length === 0) {
+                showNotification('내보낼 기록이 없습니다.', 'warning');
+                return;
+            }
+            
+            const headers = ['날짜', '시간', '좌석번호', '이름', '소요시간(초)', '초과여부'];
+            const rows = historyData.map(r => {
+                const date = new Date(r.date);
+                return [
+                    `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2,'0')}-${date.getDate().toString().padStart(2,'0')}`,
+                    `${date.getHours().toString().padStart(2,'0')}:${date.getMinutes().toString().padStart(2,'0')}:${date.getSeconds().toString().padStart(2,'0')}`,
+                    r.seat,
+                    r.name,
+                    r.duration,
+                    r.isOvertime ? 'Y' : 'N'
+                ].join(',');
+            });
+            
+            const csv = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `외출기록_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification('기록이 CSV 파일로 저장되었습니다!', 'success');
+        }
+
+        // 기록 삭제
+        function clearHistory() {
+            if (historyData.length === 0) {
+                showNotification('삭제할 기록이 없습니다.', 'warning');
+                return;
+            }
+            
+            if (confirm('모든 외출 기록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
+                historyData = [];
+                saveHistory();
+                renderHistory();
+                showNotification('모든 기록이 삭제되었습니다.', 'info');
+            }
+        }
 
         // ============================================
         // 구글 시트에서 데이터 불러오기
@@ -976,6 +1401,11 @@
                 const user = activeUsers[userIndex];
                 clearInterval(timers[number]);
                 delete timers[number];
+                
+                // 외출 기록 저장
+                const duration = Math.floor((Date.now() - user.startTime) / 1000);
+                addHistory(user, duration, user.isOvertime);
+                
                 activeUsers.splice(userIndex, 1);
                 
                 updateActiveList();
@@ -1105,6 +1535,7 @@
         // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', async function() {
             await loadFromGoogleSheet();
+            loadHistory(); // 외출 기록 불러오기
             updateStats();
             updateActiveList();
             document.getElementById('studentNumber').focus();
