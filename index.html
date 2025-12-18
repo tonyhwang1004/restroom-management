@@ -915,7 +915,7 @@
         const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQDqLzIW7jv4R3g-dlsVOIkQUILTFMndpM54H7_rALP4bdBw_5oEtY48cKn1mx4wAJdi7FHtvtMk-1o/pub?output=csv';
         
         // 외출 기록 저장용 Apps Script URL
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzMT3K912uPN0gCzTKas9Whv1m3eoTU7QoSAV1LMzlVvVfCXrDYNEWOrE1u_RL7OjrR/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzHMHezKJH30nEq9oCZ5do3LOU0JkaY-2OOf0FQrJxk6EOviBC4mPhj5s02Qa2dA_ro/exec';
         
         // 현재 좌석 데이터
         let seatData = {};
@@ -983,25 +983,20 @@
             const durationMin = Math.floor(record.duration / 60);
             const durationSec = record.duration % 60;
             
-            const data = {
+            const params = new URLSearchParams({
                 date: dateStr,
                 time: timeStr,
                 seat: record.seat,
                 name: record.name,
                 duration: `${durationMin}분 ${durationSec}초`,
                 overtime: record.isOvertime ? '초과' : '정상'
-            };
+            });
             
             try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                console.log('구글 시트에 저장 완료');
+                // 이미지 요청 방식으로 CORS 우회
+                const img = new Image();
+                img.src = `${GOOGLE_SCRIPT_URL}?${params.toString()}`;
+                console.log('구글 시트에 저장 요청 완료');
             } catch (error) {
                 console.error('구글 시트 저장 실패:', error);
             }
